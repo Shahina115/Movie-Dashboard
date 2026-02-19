@@ -1,4 +1,5 @@
 import type { Movie } from '../lib/movie'
+import { getMovieId } from '../lib/movie'
 import { MovieCard } from './MovieCard'
 
 export function MovieGrid({
@@ -16,7 +17,7 @@ export function MovieGrid({
     <div className="movie-grid">
       {movies.map((movie, idx) => (
         <MovieCard
-          key={(movie.id as string | number | undefined) ?? idx}
+          key={getMovieId(movie) || String(idx)}
           movie={movie}
           isFavorite={isFavorite(movie)}
           onToggleFavorite={onToggleFavorite}
@@ -26,4 +27,3 @@ export function MovieGrid({
     </div>
   )
 }
-
