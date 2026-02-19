@@ -1,57 +1,24 @@
 import {
-  createContext,
   useCallback,
-  useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from 'react'
-
-type RegisteredUser = {
-  name: string
-  email: string
-  password: string
-}
-
-export type AuthUser = {
-  name: string
-  email: string
-}
-
-type AuthContextValue = {
-  user: AuthUser | null
-  isAuthenticated: boolean
-  signup: (input: RegisteredUser) => void
-  login: (input: Pick<RegisteredUser, 'email' | 'password'>) => void
-  logout: () => void
-}
-
-const AuthContext = createContext<AuthContextValue | null>(null)
-
-const REGISTERED_USER_KEY = 'movieDashboard_registeredUser'
-const SESSION_USER_KEY = 'movieDashboard_sessionUser'
-
-function safeParseJson<T>(value: string | null): T | null {
-  if (!value) return null
-  try {
-    return JSON.parse(value) as T
-  } catch {
-    return null
-  }
-}
-
-function isValidEmail(value: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-}
+import {
+  AuthContext,
+  REGISTERED_USER_KEY,
+  SESSION_USER_KEY,
+  isValidEmail,
+  safeParseJson,
+  type AuthContextValue,
+  type AuthUser,
+  type RegisteredUser,
+} from './auth'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null)
-
-  useEffect(() => {
-    const session = safeParseJson<AuthUser>(localStorage.getItem(SESSION_USER_KEY))
-    if (session) setUser(session)
-  }, [])
+  const [user, setUser] = useState<AuthUser | null>(() =>
+    safeParseJson<AuthUser>(localStorage.getItem(SESSION_USER_KEY)),
+  )
 
   const signup = useCallback((input: RegisteredUser) => {
     const name = input.name.trim()
@@ -112,10 +79,3 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
-
-export function useAuth() {
-  const value = useContext(AuthContext)
-  if (!value) throw new Error('useAuth must be used within an AuthProvider')
-  return value
-}
-
