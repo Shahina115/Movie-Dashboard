@@ -1,8 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from './routing/ProtectedRoute.tsx'
-import { DashboardPage } from './screens/DashboardPage.tsx'
 import { LoginPage } from './screens/LoginPage.tsx'
 import { SignupPage } from './screens/SignupPage.tsx'
+import { DashboardPage } from './screens/DashboardPage.tsx'
 
 export default function App() {
   return (
